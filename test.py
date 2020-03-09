@@ -9,15 +9,20 @@ from utils.logger import logger
 
 
 class QueueConsumerWorker():
-    
+
     def __init__(self):
         self.rbmq = BasicConsumerRabbitMQ()
+
+    def _callback(self,parametro1,parametro2):
+        print (f'{parametro1}, {parametro2}, {self.name}')
     
     def run(self) -> bool:
         try:
-            message = self.rbmq.get_next_message()
+            message, method = self.rbmq.get_next_message()
             if message is not None:
                 logger.info(f"New message:{message}")
+                self.rbmq.ack_message(method)
+
             # time.sleep(0.2)
             return 0
         except Exception as err:
@@ -30,6 +35,7 @@ class Coordinator():
     
     def __init__(self):
         self.consumer = QueueConsumerWorker()
+        self.consumer.name = "nome teste"
         self.can_execute = 0
         self.last_health_check = datetime.now() - timedelta(
             milliseconds=self.HEALTH_CHECK_PERIOD + 1)  # force first Healthcheck
@@ -48,7 +54,7 @@ class Coordinator():
     
     def health_check_api_1(self) -> bool:
         try:
-            f = urllib.request.urlopen("http://127.0.0.1:5000/api/whatever")
+            f = urllib.request.urlopen("http://127.0.0.1:5002/api/whatever")
             if f.status == 200:
                 return True
             else:

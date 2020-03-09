@@ -4,6 +4,9 @@
 from rabbitmq.rabbit_base import RabbitBase
 
 class BasicConsumerRabbitMQ(RabbitBase):
+
+    def ack_message(self, method):
+        self.channel.basic_ack(method.delivery_tag)
     
     def get_next_message(self,  max_retry=5):
         """
@@ -19,11 +22,12 @@ class BasicConsumerRabbitMQ(RabbitBase):
                 queue=self.QUEUE_NAME, auto_ack=False
             )
             if body:
-                self.channel.basic_ack(method.delivery_tag)
-                return body
+
+
+                return body, method
             else:
                 if retry_count < max_retry:
                     sleep(1)
                     retry_count += 1
                 else:
-                    return None
+                    return None, None
