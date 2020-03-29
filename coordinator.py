@@ -82,6 +82,3 @@ class Coordinator():
                 logger.critical(str(err))
 
 
-if __name__ == '__main__':
-    c = Coordinator()
-    c.run_tasks()
