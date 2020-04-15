@@ -11,11 +11,11 @@ from time import sleep
 from broker.broker import Broker
 
 if __name__ == "__main__":
-    channels = ["my_fancy_queue"]
+    channels = ["queue1"]
     broker = Broker()
     broker.declare_queues(channels)
 
     while True:
         data = {"date_time": str(datetime.now())}
-        broker.send_message(message=data,  topic="TOPIC/my_fancy_queue", routing_key=None)
+        broker.send_message(message=data,  topic="TOPIC/queue1", routing_key=None)
         sleep(5)
