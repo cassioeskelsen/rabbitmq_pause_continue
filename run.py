@@ -1,4 +1,4 @@
-from coordinator import Coordinator
+from app.coordinator import Coordinator
 
 if __name__ == '__main__':
     c = Coordinator()

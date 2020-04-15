@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import time, sys
+import time
 import urllib.request
 from datetime import datetime, timedelta
 
 from utils.logger import logger
-from worker_sample import QueueConsumerWorker
+from app.worker_sample import QueueConsumerWorker
 
 
 class Coordinator:
@@ -33,7 +33,7 @@ class Coordinator:
 
     def health_check_api_1(self) -> bool:
         try:
-            f = urllib.request.urlopen("http://127.0.0.1:5002/api/whatever")
+            f = urllib.request.urlopen("http://127.0.0.1:5002/api/healthcheck")
             if f.status == 200:
                 return True
             else:
@@ -57,10 +57,12 @@ class Coordinator:
             try:
                 if self.can_execute < 1:
                     self.can_execute = self.consumer.run()
+                    if self.can_execute > 0:
+                        logger.error("Something happend on run... stop consuming")
                 else:
                     pass
 
-                time.sleep(0.2)
+                time.sleep(0.02)
             except Exception as err:
                 logger.critical(str(err))
 

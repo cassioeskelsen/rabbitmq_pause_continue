@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, jsonify
-
+from utils.logger import logger
 app = Flask(__name__)
 
 """
@@ -11,13 +11,14 @@ app = Flask(__name__)
 """
 
 
-@app.route("/api/whatever")
-def whatever():
+@app.route("/api/whatever/<message>")
+def whatever(message):
+    logger.info(f"Incoming message: {message}")
     resp = jsonify(my_result=42)
     return resp
 
 
-@app.route("/healthcheck")
+@app.route("/api/healthcheck")
 def healthcheck():
     resp = jsonify(health=True)
     return resp
